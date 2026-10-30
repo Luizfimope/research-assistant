@@ -1,0 +1,29 @@
+{
+  "name": "research-assistant",
+  "version": "1.0.0",
+  "description": "Busca científica diária com Zotero e newsletter",
+  "main": "main.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "server": "node src/server.js",
+    "test": "node --test test/core.test.js test/integrations.test.js test/literature.test.js test/relevance.test.js",
+    "daily": "node src/daily.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^2.7.0",
+    "nodemailer": "^6.9.14",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "electron": "^44.3.0",
+    "electron-packager": "^17.1.2"
+  }
+}

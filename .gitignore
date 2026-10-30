@@ -1,0 +1,34 @@
+# Private configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+# Local data and exports
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.db
+*.db-*
+backups/
+exports/
+revisao-*.json
+revisao-*.zip
+*.log
+# Dependencies and builds
+node_modules/
+dist/
+build/
+release/
+AssistentePesquisa-*/
+# Local tools and personal captures
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.zip
+coverage/
+.DS_Store
+Thumbs.db

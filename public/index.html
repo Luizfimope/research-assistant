@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabinete — Assistente de Pesquisa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <span class="brand-name">Gabinete</span>
+    </div>
+    <p class="brand-sub">seu assistente de leitura</p>
+
+    <section class="panel">
+      <h3>Temas acompanhados</h3>
+      <form id="topic-form" class="topic-form">
+        <input type="text" id="topic-input" placeholder="ex: redes neurais gráficas" autocomplete="off" />
+        <button type="submit">Adicionar</button>
+      </form>
+      <ul id="topic-list" class="topic-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h3>Revistas acompanhadas</h3>
+      <form id="journal-form" class="topic-form">
+        <input type="text" id="journal-input" placeholder="nome ou ISSN, ex: Nature" autocomplete="off" />
+        <button type="submit">Adicionar</button>
+      </form>
+      <ul id="journal-list" class="topic-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h3>Ritmo de leitura</h3>
+      <div id="heatmap" class="heatmap"></div>
+      <p class="heatmap-caption"><span id="streak-text">—</span></p>
+    </section>
+
+    <section class="panel">
+      <h3>Zotero</h3>
+      <div id="zotero-status" class="zotero-status">verificando…</div>
+      <p id="zotero-connect">Configure a chave do Zotero no arquivo .env local.</p>
+    </section>
+
+    <button id="run-now" class="run-now">Buscar artigos agora</button>
+  </aside>
+
+  <main class="content">
+    <nav class="main-tabs" aria-label="Área do aplicativo"><button type="button" id="tab-daily" aria-selected="true">Newsletter diária</button><button type="button" id="tab-review" aria-selected="false">Revisão de literatura</button></nav>
+    <section id="daily-view">
+    <header class="content-header">
+      <div class="content-header-text">
+        <p class="eyebrow-date" id="today-date"></p>
+        <h1>Sua newsletter de artigos</h1>
+      </div>
+    </header>
+
+    <section class="operations" aria-live="polite"><h3>Automação e entrega</h3><p id="operation-status">Verificando…</p><button id="verify-email">Verificar conexão do e-mail</button><p id="action-message" role="status"></p><label class="daily-history-control"><input type="checkbox" id="show-unconfirmed"> Mostrar também resultados antigos sem confirmação de tema</label><p id="daily-filter-note" class="review-scope">A seleção exige evidência do tema no título, resumo ou palavras-chave.</p></section>
+    <div id="newsletter-body" class="newsletter-body">
+      <p class="empty-state">Carregando…</p>
+    </div>
+
+    <section class="history">
+      <h3>Edições anteriores</h3>
+      <ul id="history-list" class="history-list"></ul>
+    </section>
+    </section>
+    <section id="review-view" hidden>
+      <header class="review-heading"><p class="eyebrow-date">Biblioteca de investigação</p><h1>Revisão de literatura</h1><p>Explore um tema ao longo dos anos e acompanhe as referências que ligam os artigos.</p></header>
+      <form id="review-form" class="review-form">
+        <label class="review-topic">Tema da pesquisa<input id="review-topic" list="review-topics" required minlength="2" maxlength="300" placeholder="Ex.: terapia cognitiva para insônia"><datalist id="review-topics"></datalist></label>
+        <label>De<input id="review-from" type="number" min="1800" value="2003" required></label>
+        <label>Até<input id="review-to" type="number" min="1800" required></label>
+        <label>Artigos por busca<select id="review-limit"><option value="50">50</option><option value="100" selected>100</option><option value="200">200</option><option value="500">500</option></select></label>
+        <label class="review-concepts">Conceitos obrigatórios<textarea id="review-concepts" rows="4" placeholder="Um conceito por linha. Sinônimos na mesma linha, separados por |."></textarea><span>Todos os conceitos precisam aparecer. Na mesma linha, os termos são alternativas. Revise as sugestões em português e inglês antes de buscar.</span></label><div class="review-strategy-actions"><button type="button" id="review-suggest">Sugerir conceitos a partir do tema</button></div><button id="review-submit" type="submit">Construir revisão</button>
+      </form>
+      <p class="review-scope">Busca em PubMed e Crossref com avaliação de todos os conceitos no título, resumo ou palavras-chave. O limite é um máximo: não completamos a lista com artigos que atendem só a parte do tema. As referências externas do mapa são contexto, não artigos aprovados na busca.</p>
+      <p id="review-message" role="status" aria-live="polite">Escolha um tema para começar.</p>
+      <div class="review-history-bar"><label>Revisões salvas <select id="review-history"><option value="">Selecione uma revisão</option></select></label><button type="button" id="review-export" disabled>Exportar JSON</button><button type="button" id="review-markdown" disabled>Exportar notas para Obsidian</button></div>
+      <div id="review-results" hidden>
+        <div id="review-stats" class="review-stats"></div>
+        <div class="review-workspace">
+          <section class="graph-panel" aria-label="Mapa de referências">
+            <div class="graph-toolbar"><span>Mapa de referências</span><div><button type="button" id="graph-minus" aria-label="Diminuir zoom">−</button><button type="button" id="graph-plus" aria-label="Aumentar zoom">+</button><button type="button" id="graph-fit">Centralizar</button></div></div>
+            <canvas id="reference-graph" tabindex="0" aria-label="Mapa interativo de citações. A lista de artigos abaixo permite explorar as mesmas conexões pelo teclado."></canvas>
+            <div class="graph-caption"><span><i class="seed-dot"></i> Artigo encontrado</span><span><i class="ref-dot"></i> Referência citada</span><span>Seta: cita → citado</span></div>
+            <label class="graph-options"><input type="checkbox" id="graph-leaves"> Mostrar também referências citadas por um único artigo</label><p id="graph-count"></p>
+          </section>
+          <aside id="review-detail" class="review-detail" aria-live="polite"><h2>Explore as conexões</h2><p>Selecione um ponto ou um artigo na lista. Arraste os pontos para organizar o mapa, arraste o fundo para mover e use a roda do mouse para aproximar.</p></aside>
+        </div>
+        <section class="review-articles"><div class="review-list-header"><h2>Candidatos à revisão</h2><label>Correspondência<select id="review-match"><option value="title" selected>Todos os conceitos no título</option><option value="metadata">Todos nos metadados (inclui resumo)</option></select></label><label>Filtrar nesta revisão<input id="review-filter" type="search" placeholder="Título, autor ou DOI"></label></div><p id="review-list-count" class="review-scope"></p><div id="review-article-list"></div></section>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<script src="app.js"></script>
+<script src="reviews.js"></script>
+</body>
+</html>
